@@ -1,0 +1,5 @@
+---
+incline:
+  gcs_bucket: robotblake-sandbox
+  single_page_app: true
+  prefix: incline

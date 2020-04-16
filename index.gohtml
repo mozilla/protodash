@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Prototype Dashboards</title>
+  </head>
+  <body>
+    <h1>Prototype Dashboards</h1>
+    <ul>
+      {{range .Dashboards}}
+        <li><a href="/{{.Slug}}/">{{.Name}}</a></li>
+      {{end}}
+    </ul>
+  </body>
+</html>
