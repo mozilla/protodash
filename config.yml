@@ -6,3 +6,6 @@ incline:
 wlach-test:
   gcs_bucket: wlach-test-gcs
   single_page_app: false
+bucket-time:
+  gcs_bucket: bucket-time
+  single_page_app: false
