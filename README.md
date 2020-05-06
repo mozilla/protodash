@@ -2,15 +2,6 @@
 
 ProtoDash is a tool to aid the rapid development of prototype dashboards and enable data engineering and data science to deploy static sites without the need to engage with ops.
 
-## Usage
-
-You'll want to set the `GOOGLE_CLOUD_CREDENTIALS` to point at either the json keyfile for a service account, or your local application default credentials json keyfile (usually `~/.config/gcloud/application_default_credentials.json`).
-
-```
-go build -o protodash
-./protodash
-```
-
 ## Dashboard Config
 
 The config for the dashboards is stored in `config.yml` and is a map of slugs (the path that the dashboard will serve from) and the config options for that specific dashboard.
@@ -31,8 +22,22 @@ dashboard-slug:
 | `single_page_app` | Whether the app is an SPA, when this is set to `true` and a path would return a 404, we serve the root `index.html` instead | `false` | `no`     |
 | `prefix`          | A prefix in the bucket to serve from, this would allow you to run multiple apps from the same bucket                        |         | `no`     |
 
+## Adding a dashboard
+
+Once you have a dashboard ready to go, open a PR against `config.yml` with the required info. After it's approved and merged we auto-deploy the changes and from that point on you can edit the files in your GCS bucket and the changes should be instant.
+
+## Local Development
+
+You'll want to set the `GOOGLE_CLOUD_CREDENTIALS` to point at either the json keyfile for a service account, or your local application default credentials json keyfile (usually `~/.config/gcloud/application_default_credentials.json`).
+
+```
+go build -o protodash
+./protodash
+```
 
 ## Environment Config
+
+These environment variables control how ProtoDash operates in production. It should not normally be necessary to modify these.
 
 | Env Variable                  | Description                                                                                             | Default |
 |-------------------------------|---------------------------------------------------------------------------------------------------------|---------|
@@ -42,10 +47,6 @@ dashboard-slug:
 | `PROTODASH_CLIENT_TIMEOUT`    | Hard timeout on requests that protodash sends to the Google Storage API                                 | `2s`    |
 | `PROTODASH_IDLE_CONN_TIMEOUT` | Maximum duration of idle connections between protodash and the Google Storage API                       | `120s`  |
 | `PROTODASH_MAX_IDLE_CONNS`    | Maximum number of idle connections to keep open. This doesn't control the maximum number of connections | `10`    |
-
-## Adding a dashboard
-
-Once you have a dashboard ready to go, open a PR against `config.yml` with the required info. After it's approved and merged we auto-deploy the changes and from that point on you can edit the files in your GCS bucket and the changes should be instant.
 
 ## Thanks
 
