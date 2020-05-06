@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/hlog"
 )
 
 // Dash is an instance of a specific dashboard
@@ -18,7 +18,6 @@ type Dash struct {
 	SPA    bool   `yaml:"single_page_app"`
 	Prefix string
 	Config *Config
-	Logger *logrus.Logger
 	Client *http.Client
 }
 
@@ -37,11 +36,11 @@ func (d *Dash) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// build the object name
 	objName := strings.TrimPrefix(r.URL.Path, "/"+d.Slug+"/")
-	if d.Prefix != "" {
-		objName = d.Prefix + "/" + objName
-	}
 	if objName == "" {
 		objName = "index.html"
+	}
+	if d.Prefix != "" {
+		objName = d.Prefix + "/" + objName
 	}
 
 	// build up the GCS URL
@@ -78,6 +77,13 @@ func (d *Dash) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+
+	// add dashboard name, bucket, and object to log
+	hlog.FromRequest(r).Info().
+		Str("dashboard", d.Name).
+		Str("bucket", d.Bucket).
+		Str("object", objName).
+		Msg("")
 
 	// copy GCS response headers and body to our response
 	for name, values := range gcsResp.Header {
