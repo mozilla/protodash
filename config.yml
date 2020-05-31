@@ -9,3 +9,6 @@ wlach-test:
 bucket-time:
   gcs_bucket: bucket-time
   single_page_app: false
+obg:
+  gcs_bucket: obg-example
+  single_page_app: false
