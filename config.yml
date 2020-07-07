@@ -13,3 +13,6 @@ etl-graph:
   gcs_bucket: etl-graph
   single_page_app: true
   prefix: site
+lunascope:
+  gcs_bucket: mozanalysis
+  single_page_app: false
