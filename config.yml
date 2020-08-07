@@ -16,3 +16,5 @@ etl-graph:
 pibal:
   gcs_bucket: mozanalysis
   single_page_app: false
+data-club-demo:
+  gcs_bucket: data-club-demo-project-1
