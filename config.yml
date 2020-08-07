@@ -1,6 +1,6 @@
 ---
 incline:
-  gcs_bucket: robotblake-sandbox
+  gcs_bucket: robotblake-sandbxoo
   single_page_app: true
   prefix: incline
 wlach-test:
@@ -16,3 +16,5 @@ etl-graph:
 pibal:
   gcs_bucket: mozanalysis
   single_page_app: false
+data-club:
+  gcs_bucket: my-cool-new-bucket
