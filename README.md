@@ -24,6 +24,8 @@ dashboard-slug:
 
 ## Adding a dashboard
 
+Protodash has access to GCS buckets created in projects in the `dataops/sandbox` hierarchy: for more information on creating such a project see [Creating a Prototype Data Project on Google Cloud Platform](https://docs.telemetry.mozilla.org/cookbooks/gcp-projects.html).
+
 Once you have a dashboard ready to go, open a PR against `config.yml` with the required info. After it's approved and merged we auto-deploy the changes and from that point on you can edit the files in your GCS bucket and the changes should be instant.
 
 ## Local Development
