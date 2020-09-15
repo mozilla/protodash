@@ -2,8 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cimg/go:1.15.2
-
+      - image: circleci/golang:1.15.2
     working_directory: /go/src/github.com/mozilla/protodash
     steps:
       - checkout
