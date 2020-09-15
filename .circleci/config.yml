@@ -7,6 +7,4 @@ jobs:
     working_directory: /go/src/github.com/mozilla/protodash
     steps:
       - checkout
-
-      # specify any bash command here prefixed with `run: `
       - run: go build -o protodash
