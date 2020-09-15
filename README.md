@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/mozilla/protodash.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/protodash)
+
+
 # ProtoDash
 
 ProtoDash is a tool to aid the rapid development of prototype dashboards and enable data engineering and data science to deploy static sites without the need to engage with ops.
