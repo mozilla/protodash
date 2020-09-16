@@ -21,3 +21,6 @@ data-club-demo:
 partybal:
   gcs_bucket: partybal
   single_page_app: false
+numbers-that-matter-prototype:
+  gcs_bucket: numbers-that-matter-prototype 
+  single_page_app: false
