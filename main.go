@@ -44,7 +44,9 @@ func main() {
 		http.Handle("/"+dashboard.Slug+"/", chain.Then(dashboard))
 	}
 
-	http.ListenAndServe(cfg.Listen, nil)
+	if err = http.ListenAndServe(cfg.Listen, nil); err != nil {
+		log.Fatal().Err(err).Send()
+	}
 }
 
 func index(dashboards []*Dash, tmpl *template.Template) http.HandlerFunc {
@@ -55,7 +57,10 @@ func index(dashboards []*Dash, tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 		data := struct{ Dashboards []*Dash }{dashboards}
-		tmpl.Execute(w, data)
+		if err := tmpl.Execute(w, data); err != nil {
+			log.Error().Err(err).Send()
+			http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+		}
 	})
 }
 

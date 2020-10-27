@@ -92,5 +92,7 @@ func (d *Dash) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	w.WriteHeader(gcsResp.StatusCode)
-	io.Copy(w, gcsResp.Body)
+	if _, err = io.Copy(w, gcsResp.Body); err != nil {
+		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+	}
 }
