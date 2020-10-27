@@ -15,11 +15,11 @@ import (
 // environment.
 type Config struct {
 	Listen          string        `default:":8080"`
-	LogLevel        string        `default:"debug"`
-	ProxyTimeout    time.Duration `default:"10s"`
-	ClientTimeout   time.Duration `default:"2s"`
-	IdleConnTimeout time.Duration `default:"120s"`
-	MaxIdleConns    int           `default:"10"`
+	LogLevel        string        `split_words:"true" default:"debug"`
+	ProxyTimeout    time.Duration `split_words:"true" default:"10s"`
+	ClientTimeout   time.Duration `split_words:"true" default:"2s"`
+	IdleConnTimeout time.Duration `split_words:"true" default:"120s"`
+	MaxIdleConns    int           `split_words:"true" default:"10"`
 }
 
 // HTTPClient returns an HTTP client with the proper authentication config
