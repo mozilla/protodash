@@ -1,79 +1,62 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gobuffalo/flect"
-	"github.com/justinas/alice"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
 
 func main() {
+	// load config file
 	cfg, err := LoadConfig()
 	if err != nil {
 		log.Panic().Err(err).Send()
 	}
 
+	// configure logging
+	configureLogging(cfg.LogLevel)
+
+	// load dashboard configs
 	dashboards, err := loadDashboards("config.yml", cfg)
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
+	// parse index template
 	tmpl, err := template.ParseFiles("index.gohtml")
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
-	level, err := zerolog.ParseLevel(cfg.LogLevel)
-	if err != nil {
-		err = fmt.Errorf("Unknown Level String: '%s', defaulting to DebugLevel", level)
-		log.Warn().Err(err).Msg("")
-		log.Warn().Err(err).Msg("")
-		level = zerolog.DebugLevel
+	// create chain with http loggin
+	chain := newLoggingChain()
+
+	// mount the index function to "/"
+	http.Handle("/", chain.ThenFunc(index(dashboards, tmpl)))
+
+	// iterate over the dashboards and mount them
+	for _, dashboard := range dashboards {
+		log.Info().Msgf("mounting %s at /%s/", dashboard.Name, dashboard.Slug)
+		http.Handle("/"+dashboard.Slug+"/", chain.Then(dashboard))
 	}
-	zerolog.SetGlobalLevel(level)
 
-	logger := zerolog.New(os.Stdout).With().
-		Timestamp().
-		Logger()
+	http.ListenAndServe(cfg.Listen, nil)
+}
 
-	chain := alice.New(hlog.NewHandler(logger))
-
-	chain = chain.Append(hlog.AccessHandler(func(r *http.Request, status, size int, duration time.Duration) {
-		hlog.FromRequest(r).Info().
-			Str("method", r.Method).
-			Str("url", r.URL.String()).
-			Int("status", status).
-			Int("size", size).
-			Dur("duration", duration).
-			Msg("")
-	}))
-	chain = chain.Append(hlog.RemoteAddrHandler("ip"))
-	chain = chain.Append(hlog.UserAgentHandler("user_agent"))
-	chain = chain.Append(hlog.RefererHandler("referer"))
-
-	http.Handle("/", chain.ThenFunc(func(w http.ResponseWriter, r *http.Request) {
+func index(dashboards []*Dash, tmpl *template.Template) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// return 404 if not the root
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
 			return
 		}
 		data := struct{ Dashboards []*Dash }{dashboards}
 		tmpl.Execute(w, data)
-	}))
-
-	for _, dashboard := range dashboards {
-		log.Info().Msgf("mounting %s at /%s/", dashboard.Name, dashboard.Slug)
-		http.Handle("/"+dashboard.Slug+"/", chain.Then(dashboard))
-	}
-
-	http.ListenAndServe(":8080", nil)
+	})
 }
 
 func loadDashboards(name string, config *Config) ([]*Dash, error) {
