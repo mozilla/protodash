@@ -18,11 +18,12 @@ fenix-migration:
   single_page_app: false
 data-club-demo:
   gcs_bucket: data-club-demo-project-1
+  public: true
 partybal:
   gcs_bucket: partybal
   single_page_app: false
 numbers-that-matter:
-  gcs_bucket: numbers-that-matter-prototype 
+  gcs_bucket: numbers-that-matter-prototype
   single_page_app: false
 mobile-mau-2020:
   gcs_bucket: mau-dashboard

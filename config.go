@@ -20,6 +20,12 @@ type Config struct {
 	ClientTimeout   time.Duration `split_words:"true" default:"2s"`
 	IdleConnTimeout time.Duration `split_words:"true" default:"120s"`
 	MaxIdleConns    int           `split_words:"true" default:"10"`
+
+	OAuthEnabled     bool   `envconfig:"OAUTH_ENABLED"`
+	OAuthDomain      string `envconfig:"OAUTH_DOMAIN"`
+	OAuthClientID    string `envconfig:"OAUTH_CLIENT_ID"`
+	OAuthRedirectURI string `envconfig:"OAUTH_REDIRECT_URI"`
+	SessionSecret    string `split_words:"true"`
 }
 
 // HTTPClient returns an HTTP client with the proper authentication config
