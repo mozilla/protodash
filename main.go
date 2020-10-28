@@ -66,7 +66,7 @@ func main() {
 	}
 
 	// mount the index function to "/"
-	http.Handle("/", public.ThenFunc(index(dashboards, tmpl, cfg.OAuthEnabled)))
+	http.Handle("/", public.ThenFunc(index(dashboards, tmpl, cfg.OAuthEnabled, cfg.ShowPrivate)))
 
 	// iterate over the dashboards and mount them
 	for _, dashboard := range dashboards {
@@ -86,10 +86,11 @@ func main() {
 type indexData struct {
 	Dashboards  []*Dash
 	AuthEnabled bool
-	UserEmail   string
+	User        *goth.User
+	ShowPrivate bool
 }
 
-func index(dashboards []*Dash, tmpl *template.Template, authEnabled bool) http.HandlerFunc {
+func index(dashboards []*Dash, tmpl *template.Template, authEnabled, showPrivate bool) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// return 404 if not the root
 		if r.URL.Path != "/" {
@@ -100,12 +101,15 @@ func index(dashboards []*Dash, tmpl *template.Template, authEnabled bool) http.H
 		data := &indexData{
 			Dashboards:  dashboards,
 			AuthEnabled: authEnabled,
+			ShowPrivate: showPrivate,
 		}
 
 		if authEnabled {
 			session, _ := gothic.Store.Get(r, sessionName)
 			if email, ok := session.Values["current_user_email"]; ok {
-				data.UserEmail = email.(string)
+				data.User = &goth.User{
+					Email: email.(string),
+				}
 			}
 		}
 
