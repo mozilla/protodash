@@ -9,19 +9,21 @@
   </head>
   <body>
     <h1>Prototype Dashboards</h1>
-    {{if .AuthEnabled }}{{if ne .UserEmail "" -}}
-    <p>Logged in as {{.UserEmail}} | <a href="/auth/logout">Log Out</a></p>
-    {{else -}}
-    <p><a href="/auth/login">Log In</a></p>
-    {{end}}{{end -}}
+    {{if .AuthEnabled -}}
+      {{if .User -}}
+        <p>Logged in as {{.User.Email}} | <a href="/auth/logout">Log Out</a></p>
+      {{- else -}}
+        <p><a href="/auth/login">Log In</a></p>
+      {{- end }}
+    {{- end }}
     <ul>
-      {{range .Dashboards -}}
-        {{if or (not $.AuthEnabled) (ne $.UserEmail "") .Public -}}
-        <li><a href="/{{.Slug}}/">{{.Name}}</a></li>
-        {{else -}}
-        <li>🔒 <a>{{.Name}}</a></li>
-        {{end -}}
-      {{end -}}
+      {{ range .Dashboards -}}
+        {{if or (not $.AuthEnabled) $.User .Public -}}
+          <li><a href="/{{.Slug}}/">{{.Name}}</a></li>
+        {{ else if $.ShowPrivate -}}
+          <li>🔒 <a>{{.Name}}</a></li>
+        {{ end -}}
+      {{ end -}}
     </ul>
     <p>To publish something here, check out the <a href="https://github.com/mozilla/protodash">mozilla/protodash repository</a>.</p>
   </body>

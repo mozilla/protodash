@@ -26,6 +26,7 @@ type Config struct {
 	OAuthClientID    string `envconfig:"OAUTH_CLIENT_ID"`
 	OAuthRedirectURI string `envconfig:"OAUTH_REDIRECT_URI"`
 	SessionSecret    string `split_words:"true"`
+	ShowPrivate      bool   `split_words:"true"`
 }
 
 // HTTPClient returns an HTTP client with the proper authentication config
