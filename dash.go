@@ -17,6 +17,7 @@ type Dash struct {
 	Bucket string `yaml:"gcs_bucket"`
 	SPA    bool   `yaml:"single_page_app"`
 	Prefix string
+	Public bool
 	Config *Config
 	Client *http.Client
 }

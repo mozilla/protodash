@@ -5,6 +5,7 @@ go 1.14
 require (
 	cloud.google.com/go/storage v1.12.0
 	github.com/gobuffalo/flect v0.2.2
+	github.com/gorilla/sessions v1.2.1
 	github.com/jarcoal/httpmock v1.0.6
 	github.com/justinas/alice v1.2.0
 	github.com/kelseyhightower/envconfig v1.4.0

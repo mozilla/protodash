@@ -6,6 +6,10 @@ import (
 	"os"
 
 	"github.com/gobuffalo/flect"
+	"github.com/gorilla/sessions"
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/gothic"
+	"github.com/mozilla/protodash/pkce"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
@@ -33,14 +37,44 @@ func main() {
 	}
 
 	// create chain with http loggin
-	chain := newLoggingChain()
+	public := newLoggingChain()
+	private := public
+
+	// configure authentication if enabled
+	if cfg.OAuthEnabled {
+		cookieStore := sessions.NewCookieStore([]byte(cfg.SessionSecret))
+		cookieStore.Options.HttpOnly = true
+		gothic.Store = cookieStore
+
+		goth.UseProviders(pkce.New(
+			cfg.OAuthClientID,
+			cfg.OAuthRedirectURI,
+			cfg.OAuthDomain,
+		))
+
+		gothic.GetProviderName = func(req *http.Request) (string, error) {
+			return "pkce", nil
+		}
+
+		log.Info().Msg("enabling oauth authentication")
+
+		http.Handle("/auth/login", public.ThenFunc(login))
+		http.Handle("/auth/callback", public.ThenFunc(callback))
+		http.Handle("/auth/logout", public.ThenFunc(logout))
+
+		private = public.Append(requireAuth)
+	}
 
 	// mount the index function to "/"
-	http.Handle("/", chain.ThenFunc(index(dashboards, tmpl)))
+	http.Handle("/", public.ThenFunc(index(dashboards, tmpl, cfg.OAuthEnabled)))
 
 	// iterate over the dashboards and mount them
 	for _, dashboard := range dashboards {
 		log.Info().Msgf("mounting %s at /%s/", dashboard.Name, dashboard.Slug)
+		chain := private
+		if dashboard.Public {
+			chain = public
+		}
 		http.Handle("/"+dashboard.Slug+"/", chain.Then(dashboard))
 	}
 
@@ -49,14 +83,32 @@ func main() {
 	}
 }
 
-func index(dashboards []*Dash, tmpl *template.Template) http.HandlerFunc {
+type indexData struct {
+	Dashboards  []*Dash
+	AuthEnabled bool
+	UserEmail   string
+}
+
+func index(dashboards []*Dash, tmpl *template.Template, authEnabled bool) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// return 404 if not the root
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
 			return
 		}
-		data := struct{ Dashboards []*Dash }{dashboards}
+
+		data := &indexData{
+			Dashboards:  dashboards,
+			AuthEnabled: authEnabled,
+		}
+
+		if authEnabled {
+			session, _ := gothic.Store.Get(r, sessionName)
+			if email, ok := session.Values["current_user_email"]; ok {
+				data.UserEmail = email.(string)
+			}
+		}
+
 		if err := tmpl.Execute(w, data); err != nil {
 			log.Error().Err(err).Send()
 			http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
