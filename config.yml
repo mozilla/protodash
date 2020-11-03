@@ -36,3 +36,6 @@ mps-deploys:
   prefix: static
 fission-experiment-monitoring-dashboard:
   gcs_bucket: fission-experiment-monitoring-dashboard
+glean-dictionary:
+  gcs_bucket: glean-dictionary-dev
+  public: true
