@@ -39,3 +39,7 @@ fission-experiment-monitoring-dashboard:
 glean-dictionary:
   gcs_bucket: glean-dictionary-dev
   public: true
+webrender-ds-283:
+  gcs_bucket: moz-fx-data-prod-analysis
+  prefix: sguha/ds_283
+  public: true
