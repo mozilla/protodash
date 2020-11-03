@@ -58,6 +58,7 @@ These environment variables control how ProtoDash operates in production. It sho
 | `PROTODASH_OAUTH_CLIENT_ID`    | Client ID of the OAuth application                                                                      |         |
 | `PROTODASH_OAUTH_REDIRECT_URI` | Callback URI to redirect to after authenticating                                                        |         |
 | `PROTODASH_SESSION_SECRET`     | Secret to usse for encrypting the session cookie                                                        |         |
+| `PROTODASH_SHOW_PRIVATE`       | Whether to show the list of private dashboards if not authenticated                                     | `false` |
 
 ## Thanks
 
