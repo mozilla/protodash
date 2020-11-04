@@ -38,4 +38,5 @@ fission-experiment-monitoring-dashboard:
   gcs_bucket: fission-experiment-monitoring-dashboard
 glean-dictionary:
   gcs_bucket: glean-dictionary-dev
+  single_page_app: true
   public: true
