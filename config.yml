@@ -34,6 +34,7 @@ desktop-mau-dau-tier1-2020:
 mps-deploys:
   gcs_bucket: monitoring-queries
   prefix: static
+  public: true
 fission-experiment-monitoring-dashboard:
   gcs_bucket: fission-experiment-monitoring-dashboard
 glean-dictionary:
