@@ -83,7 +83,7 @@ func main() {
 		http.Handle("/auth/callback", public.ThenFunc(callback))
 		http.Handle("/auth/logout", public.ThenFunc(logout))
 
-		private = public.Append(requireAuth)
+		private = public.Append(requireAuth(cfg.RedirectToLogin))
 	}
 
 	// mount the index function to "/"

@@ -31,13 +31,19 @@ func callback(w http.ResponseWriter, r *http.Request) {
 		session.Values[key] = val
 	}
 
+	redirectTo := "/"
+	if val, ok := session.Values["redirect_to"]; ok {
+		delete(session.Values, "redirect_to")
+		redirectTo = val.(string)
+	}
+
 	if err = session.Save(r, w); err != nil {
 		log.Error().Err(err).Send()
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, redirectTo, http.StatusFound)
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -57,13 +63,28 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func requireAuth(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		session, _ := gothic.Store.Get(r, sessionName)
-		if _, ok := session.Values["current_user_id"]; !ok {
-			http.Error(w, "401 Unauthorized", http.StatusUnauthorized)
-		} else {
+func requireAuth(redirectToLogin bool) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			session, _ := gothic.Store.Get(r, sessionName)
+			if _, ok := session.Values["current_user_id"]; !ok {
+				if redirectToLogin {
+					session.Values["redirect_to"] = r.URL.String()
+					if err := session.Save(r, w); err != nil {
+						log.Error().Err(err).Send()
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+
+					http.Redirect(w, r, "/auth/login", http.StatusFound)
+					return
+				}
+
+				http.Error(w, "401 Unauthorized", http.StatusUnauthorized)
+				return
+			}
+
 			next.ServeHTTP(w, r)
-		}
-	})
+		})
+	}
 }
