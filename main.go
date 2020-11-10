@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
+	"github.com/markbates/goth/providers/auth0"
 	"github.com/mozilla/protodash/pkce"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
@@ -46,17 +47,34 @@ func main() {
 		cookieStore.Options.HttpOnly = true
 		gothic.Store = cookieStore
 
-		goth.UseProviders(pkce.New(
+		pkceProvider := pkce.New(
 			cfg.OAuthClientID,
 			cfg.OAuthRedirectURI,
 			cfg.OAuthDomain,
-		))
+		)
 
-		gothic.GetProviderName = func(req *http.Request) (string, error) {
-			return "pkce", nil
+		auth0Provider := auth0.New(
+			cfg.OAuthClientID,
+			cfg.OAuthClientSecret,
+			cfg.OAuthRedirectURI,
+			cfg.OAuthDomain,
+		)
+
+		goth.UseProviders(
+			pkceProvider,
+			auth0Provider,
+		)
+
+		providerName := auth0Provider.Name()
+		if cfg.OAuthClientSecret == "" {
+			providerName = pkceProvider.Name()
 		}
 
-		log.Info().Msg("enabling oauth authentication")
+		gothic.GetProviderName = func(req *http.Request) (string, error) {
+			return providerName, nil
+		}
+
+		log.Info().Msgf("enabling authentication with %s provider", providerName)
 
 		http.Handle("/auth/login", public.ThenFunc(login))
 		http.Handle("/auth/callback", public.ThenFunc(callback))
