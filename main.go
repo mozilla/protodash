@@ -58,6 +58,9 @@ func main() {
 			cfg.OAuthClientSecret,
 			cfg.OAuthRedirectURI,
 			cfg.OAuthDomain,
+			"openid",
+			"profile",
+			"email",
 		)
 
 		goth.UseProviders(
