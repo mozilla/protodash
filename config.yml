@@ -42,6 +42,6 @@ glean-dictionary:
   single_page_app: true
   public: true
 webrender-ds-283:
-  gcs_bucket: moz-fx-data-prod-analysis
+  gcs_bucket: moz-fx-ds-283
   prefix: sguha/ds_283
   public: true
