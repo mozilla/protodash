@@ -45,3 +45,6 @@ webrender-ds-283:
   gcs_bucket: moz-fx-ds-283
   prefix: sguha/ds_283
   public: true
+data-health-monitor:
+  gcs_bucket: data-health-monitor
+  prefix: static
