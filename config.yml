@@ -23,7 +23,7 @@ partybal:
   gcs_bucket: partybal
   single_page_app: false
 numbers-that-matter:
-  gcs_bucket: numbers-that-matter-prototype
+  gcs_bucket: mozilla-desktop-funnel-prototype
   single_page_app: false
 mobile-mau-2020:
   gcs_bucket: mau-dashboard
