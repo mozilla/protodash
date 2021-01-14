@@ -19,6 +19,7 @@ fenix-migration:
 data-club-demo:
   gcs_bucket: data-club-demo-project-1
   public: true
+  subdomain: true
 partybal:
   gcs_bucket: partybal
   single_page_app: false
@@ -41,6 +42,7 @@ glean-dictionary:
   gcs_bucket: glean-dictionary-dev
   single_page_app: true
   public: true
+  subdomain: true
 webrender-ds-283:
   gcs_bucket: moz-fx-ds-283
   prefix: sguha/ds_283

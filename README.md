@@ -25,6 +25,7 @@ dashboard-slug:
 | `single_page_app` | Whether the app is an SPA, when this is set to `true` and a path would return a 404, we serve the root `index.html` instead | `false` | `no`     |
 | `prefix`          | A prefix in the bucket to serve from, this would allow you to run multiple apps from the same bucket                        |         | `no`     |
 | `public`          | Whether the dashboard should be publicly accessible                                                                         | `false` | `no`     |
+| `subdomain`       | Whether the dashboard should serve from a path or a subdomain                                                               | `false` | `no`     |
 
 ## Adding a dashboard
 
@@ -45,22 +46,23 @@ go build -o protodash
 
 These environment variables control how ProtoDash operates in production. It should not normally be necessary to modify these.
 
-| Env Variable                    | Description                                                                                             | Default |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------- | ------- |
-| `PROTODASH_LISTEN`              | Address to bind the server                                                                              | `:8080` |
-| `PROTODASH_LOG_LEVEL`           | Logging level                                                                                           | `debug` |
-| `PROTODASH_PROXY_TIMEOUT`       | Defines the maximum time in serving the proxy requests, this is a hard timeout and includes retries     | `10s`   |
-| `PROTODASH_CLIENT_TIMEOUT`      | Hard timeout on requests that protodash sends to the Google Storage API                                 | `2s`    |
-| `PROTODASH_IDLE_CONN_TIMEOUT`   | Maximum duration of idle connections between protodash and the Google Storage API                       | `120s`  |
-| `PROTODASH_MAX_IDLE_CONNS`      | Maximum number of idle connections to keep open. This doesn't control the maximum number of connections | `10`    |
-| `PROTODASH_OAUTH_ENABLED`       | Toggles whether authentication is on or off                                                             | `false` |
-| `PROTODASH_OAUTH_DOMAIN`        | The OAuth domain that the authentication layer will use, currently only supports Auth0                  |         |
-| `PROTODASH_OAUTH_CLIENT_ID`     | Client ID of the OAuth application                                                                      |         |
-| `PROTODASH_OAUTH_CLIENT_SECRET` | Client Secret of the OAuth application, if not defined use the PKCE flow                                |         |
-| `PROTODASH_OAUTH_REDIRECT_URI`  | Callback URI to redirect to after authenticating                                                        |         |
-| `PROTODASH_SESSION_SECRET`      | Secret to usse for encrypting the session cookie                                                        |         |
-| `PROTODASH_SHOW_PRIVATE`        | Whether to show the list of private dashboards if not authenticated                                     | `false` |
-| `PROTODASH_REDIRECT_TO_LOGIN`   | Whether to redirect to the login pagee if a user is not authenticated and accesses a private dashboard  | `false` |
+| Env Variable                    | Description                                                                                             | Default          |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------- |
+| `PROTODASH_LISTEN`              | Address to bind the server                                                                              | `:8080`          |
+| `PROTODASH_LOG_LEVEL`           | Logging level                                                                                           | `debug`          |
+| `PROTODASH_PROXY_TIMEOUT`       | Defines the maximum time in serving the proxy requests, this is a hard timeout and includes retries     | `10s`            |
+| `PROTODASH_CLIENT_TIMEOUT`      | Hard timeout on requests that protodash sends to the Google Storage API                                 | `2s`             |
+| `PROTODASH_IDLE_CONN_TIMEOUT`   | Maximum duration of idle connections between protodash and the Google Storage API                       | `120s`           |
+| `PROTODASH_MAX_IDLE_CONNS`      | Maximum number of idle connections to keep open. This doesn't control the maximum number of connections | `10`             |
+| `PROTODASH_OAUTH_ENABLED`       | Toggles whether authentication is on or off                                                             | `false`          |
+| `PROTODASH_OAUTH_DOMAIN`        | The OAuth domain that the authentication layer will use, currently only supports Auth0                  |                  |
+| `PROTODASH_OAUTH_CLIENT_ID`     | Client ID of the OAuth application                                                                      |                  |
+| `PROTODASH_OAUTH_CLIENT_SECRET` | Client Secret of the OAuth application, if not defined use the PKCE flow                                |                  |
+| `PROTODASH_OAUTH_REDIRECT_URI`  | Callback URI to redirect to after authenticating                                                        |                  |
+| `PROTODASH_SESSION_SECRET`      | Secret to usse for encrypting the session cookie                                                        |                  |
+| `PROTODASH_SHOW_PRIVATE`        | Whether to show the list of private dashboards if not authenticated                                     | `false`          |
+| `PROTODASH_REDIRECT_TO_LOGIN`   | Whether to redirect to the login pagee if a user is not authenticated and accesses a private dashboard  | `false`          |
+| `PROTODASH_BASE_DOMAIN`         | The domain to use when building subdomains and handling redirects                                       | `localhost:8080` |
 
 ## Thanks
 

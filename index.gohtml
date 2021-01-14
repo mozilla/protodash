@@ -9,7 +9,7 @@
   </head>
   <body>
     <h1>Prototype Dashboards</h1>
-    {{if .AuthEnabled -}}
+    {{if .Config.OAuthEnabled -}}
       {{if .User -}}
         <p>Logged in as {{.User.Email}} | <a href="/auth/logout">Log Out</a></p>
       {{- else -}}
@@ -18,9 +18,13 @@
     {{- end }}
     <ul>
       {{ range .Dashboards -}}
-        {{if or (not $.AuthEnabled) $.User .Public -}}
+        {{if or (not $.Config.OAuthEnabled) $.User .Public -}}
+          {{if .Subdomain -}}
+          <li><a href="//{{.Slug}}.{{$.Config.BaseDomain}}">{{.Name}}</a></li>
+          {{- else -}}
           <li><a href="/{{.Slug}}/">{{.Name}}</a></li>
-        {{ else if $.ShowPrivate -}}
+          {{- end}}
+        {{ else if $.Config.ShowPrivate -}}
           <li>🔒 <a>{{.Name}}</a></li>
         {{ end -}}
       {{ end -}}

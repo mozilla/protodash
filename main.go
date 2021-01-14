@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gobuffalo/flect"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
@@ -21,6 +24,8 @@ func main() {
 	if err != nil {
 		log.Panic().Err(err).Send()
 	}
+
+	s := &Server{config: cfg}
 
 	// configure logging
 	configureLogging(cfg.LogLevel)
@@ -41,11 +46,20 @@ func main() {
 	public := newLoggingChain()
 	private := public
 
+	r := mux.NewRouter()
+	r.StrictSlash(true)
+
+	bd := cfg.BaseDomain
+	bdr := r.Host(bd).Subrouter()
+
 	// configure authentication if enabled
 	if cfg.OAuthEnabled {
 		cookieStore := sessions.NewCookieStore([]byte(cfg.SessionSecret))
 		cookieStore.Options.HttpOnly = true
+		parts := strings.Split(cfg.BaseDomain, ":")
+		cookieStore.Options.Domain = parts[0]
 		gothic.Store = cookieStore
+		s.sessionStore = cookieStore
 
 		pkceProvider := pkce.New(
 			cfg.OAuthClientID,
@@ -79,15 +93,12 @@ func main() {
 
 		log.Info().Msgf("enabling authentication with %s provider", providerName)
 
-		http.Handle("/auth/login", public.ThenFunc(login))
-		http.Handle("/auth/callback", public.ThenFunc(callback))
-		http.Handle("/auth/logout", public.ThenFunc(logout))
+		bdr.Handle("/auth/login", public.Then(s.authLogin())).Methods("GET")
+		bdr.Handle("/auth/callback", public.Then(s.authCallback())).Methods("GET")
+		bdr.Handle("/auth/logout", public.Then(s.authLogout())).Methods("GET")
 
-		private = public.Append(requireAuth(cfg.RedirectToLogin))
+		private = public.Append(s.requireAuth)
 	}
-
-	// mount the index function to "/"
-	http.Handle("/", public.ThenFunc(index(dashboards, tmpl, cfg.OAuthEnabled, cfg.ShowPrivate)))
 
 	// iterate over the dashboards and mount them
 	for _, dashboard := range dashboards {
@@ -96,22 +107,74 @@ func main() {
 		if dashboard.Public {
 			chain = public
 		}
-		http.Handle("/"+dashboard.Slug+"/", chain.Then(dashboard))
+
+		sd := dashboard.Slug + "." + cfg.BaseDomain
+		bdp := "/" + dashboard.Slug + "/"
+		sdp := "/"
+		sdr := r.Host(sd).Subrouter()
+
+		bdghr := bdr.Methods("GET", "HEAD").Subrouter()
+		sdghr := sdr.Methods("GET", "HEAD").Subrouter()
+
+		var bdh http.Handler
+		var sdh http.Handler
+
+		if dashboard.Subdomain {
+			bdh = chain.Then(redirectToDomain(sd, stripPrefix(bdp)))
+			sdh = chain.Then(dashboard.Handler(sdp))
+		} else {
+			bdh = chain.Then(dashboard.Handler(bdp))
+			sdh = chain.Then(redirectToDomain(bd, addPrefix(bdp)))
+		}
+
+		bdghr.Handle(bdp, bdh)
+		bdghr.PathPrefix(bdp).Handler(bdh)
+
+		if dashboard.Subdomain {
+			sdghr.Handle(bdp, bdh)
+			sdghr.PathPrefix(bdp).Handler(bdh)
+		}
+
+		sdghr.Handle(sdp, sdh)
+		sdghr.PathPrefix(sdp).Handler(sdh)
 	}
 
-	if err = http.ListenAndServe(cfg.Listen, nil); err != nil {
+	// mount the index function to "/"
+	bdr.Handle("/", public.Then(s.index(dashboards, tmpl))).Methods("GET")
+
+	if err = http.ListenAndServe(cfg.Listen, r); err != nil {
 		log.Fatal().Err(err).Send()
 	}
 }
 
-type indexData struct {
-	Dashboards  []*Dash
-	AuthEnabled bool
-	User        *goth.User
-	ShowPrivate bool
+type modifyPathFn func(path string) string
+
+func redirectToDomain(domain string, fn modifyPathFn) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		newURL := fmt.Sprintf("//%s%s", domain, fn(r.URL.Path))
+		http.Redirect(w, r, newURL, http.StatusPermanentRedirect)
+	}
 }
 
-func index(dashboards []*Dash, tmpl *template.Template, authEnabled, showPrivate bool) http.HandlerFunc {
+func addPrefix(prefix string) modifyPathFn {
+	return func(path string) string {
+		return prefix + strings.TrimPrefix(path, "/")
+	}
+}
+
+func stripPrefix(prefix string) modifyPathFn {
+	return func(path string) string {
+		return "/" + strings.TrimPrefix(path, prefix)
+	}
+}
+
+type indexData struct {
+	Dashboards []*Dash
+	User       *goth.User
+	Config     *Config
+}
+
+func (s *Server) index(dashboards []*Dash, tmpl *template.Template) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// return 404 if not the root
 		if r.URL.Path != "/" {
@@ -120,12 +183,11 @@ func index(dashboards []*Dash, tmpl *template.Template, authEnabled, showPrivate
 		}
 
 		data := &indexData{
-			Dashboards:  dashboards,
-			AuthEnabled: authEnabled,
-			ShowPrivate: showPrivate,
+			Dashboards: dashboards,
+			Config:     s.config,
 		}
 
-		if authEnabled {
+		if s.config.OAuthEnabled {
 			session, _ := gothic.Store.Get(r, sessionName)
 			if email, ok := session.Values["current_user_email"]; ok {
 				data.User = &goth.User{
