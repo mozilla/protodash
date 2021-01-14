@@ -20,6 +20,7 @@ type Config struct {
 	ClientTimeout   time.Duration `split_words:"true" default:"2s"`
 	IdleConnTimeout time.Duration `split_words:"true" default:"120s"`
 	MaxIdleConns    int           `split_words:"true" default:"10"`
+	BaseDomain      string        `split_words:"true" default:"localhost:8080"`
 
 	OAuthEnabled      bool   `envconfig:"OAUTH_ENABLED"`
 	OAuthDomain       string `envconfig:"OAUTH_DOMAIN"`
