@@ -27,12 +27,6 @@ partybal:
 numbers-that-matter:
   gcs_bucket: mozilla-desktop-funnel-prototype
   single_page_app: false
-mobile-mau-2020:
-  gcs_bucket: mau-dashboard
-  prefix: mobile-mau-2020
-desktop-mau-dau-tier1-2020:
-  gcs_bucket: mau-dashboard
-  prefix: desktop-mau-dau-tier1-2020
 mps-deploys:
   gcs_bucket: monitoring-queries
   prefix: static
