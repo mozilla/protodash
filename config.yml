@@ -46,3 +46,6 @@ webrender-ds-283:
 data-health-monitor:
   gcs_bucket: data-health-monitor
   prefix: static
+data-steward-stats:
+  gcs_bucket: data-steward-stats
+  public: true
