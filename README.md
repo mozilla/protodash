@@ -63,6 +63,8 @@ These environment variables control how ProtoDash operates in production. It sho
 | `PROTODASH_SHOW_PRIVATE`        | Whether to show the list of private dashboards if not authenticated                                     | `false`          |
 | `PROTODASH_REDIRECT_TO_LOGIN`   | Whether to redirect to the login pagee if a user is not authenticated and accesses a private dashboard  | `false`          |
 | `PROTODASH_BASE_DOMAIN`         | The domain to use when building subdomains and handling redirects                                       | `localhost:8080` |
+| `PROTODASH_DEFAULT_BUCKET`      | Default GCS bucket to use for dashboards if none is defined in the config                               |                  |
+| `PROTODASH_CONFIG_FILE`         | Config file for the dashboards                                                                          | `config.yml`     |
 
 ## Thanks
 

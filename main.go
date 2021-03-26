@@ -31,7 +31,7 @@ func main() {
 	configureLogging(cfg.LogLevel)
 
 	// load dashboard configs
-	dashboards, err := loadDashboards("config.yml", cfg)
+	dashboards, err := loadDashboards(cfg.ConfigFile, cfg)
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}

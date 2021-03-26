@@ -31,6 +31,7 @@ type Config struct {
 	ShowPrivate       bool   `split_words:"true"`
 	RedirectToLogin   bool   `split_words:"true"`
 	DefaultBucket     string `split_words:"true"`
+	ConfigFile        string `split_words:"true" default:"config.yml"`
 }
 
 // HTTPClient returns an HTTP client with the proper authentication config
