@@ -219,6 +219,9 @@ func loadDashboards(name string, config *Config) ([]*Dash, error) {
 	for slug, dashboard := range dashboardMap {
 		dashboard.Slug = slug
 		dashboard.Name = flect.Titleize(slug)
+		if dashboard.Bucket == "" {
+			dashboard.Bucket = config.DefaultBucket
+		}
 		dashboard.Config = config
 		dashboard.Client, err = config.HTTPClient()
 		if err != nil {

@@ -30,6 +30,7 @@ type Config struct {
 	SessionSecret     string `split_words:"true"`
 	ShowPrivate       bool   `split_words:"true"`
 	RedirectToLogin   bool   `split_words:"true"`
+	DefaultBucket     string `split_words:"true"`
 }
 
 // HTTPClient returns an HTTP client with the proper authentication config
