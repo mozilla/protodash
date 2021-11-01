@@ -25,9 +25,6 @@ data-club-demo:
 partybal:
   gcs_bucket: partybal
   single_page_app: false
-numbers-that-matter:
-  gcs_bucket: mozilla-desktop-funnel-prototype
-  single_page_app: false
 mps-deploys:
   gcs_bucket: monitoring-queries
   prefix: static
