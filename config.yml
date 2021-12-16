@@ -46,7 +46,4 @@ data-health-monitor:
 data-steward-stats:
   gcs_bucket: data-steward-stats
   public: true
-mad-reports:
-  gcs_bucket: mad-reports
-  single_page_app: false
-  
+
