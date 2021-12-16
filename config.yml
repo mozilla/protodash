@@ -49,3 +49,4 @@ data-steward-stats:
 mad-reports:
   gcs_bucket: mad-reports
   single_page_app: false
+  
