@@ -31,11 +31,6 @@ mps-deploys:
   public: true
 fission-experiment-monitoring-dashboard:
   gcs_bucket: fission-experiment-monitoring-dashboard
-dictionary:
-  gcs_bucket: glean-dictionary-dev
-  single_page_app: true
-  public: true
-  subdomain: true
 webrender-ds-283:
   gcs_bucket: moz-fx-ds-283
   prefix: sguha/ds_283
