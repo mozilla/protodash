@@ -29,8 +29,6 @@ mps-deploys:
   gcs_bucket: monitoring-queries
   prefix: static
   public: true
-fission-experiment-monitoring-dashboard:
-  gcs_bucket: fission-experiment-monitoring-dashboard
 webrender-ds-283:
   gcs_bucket: moz-fx-ds-283
   prefix: sguha/ds_283
