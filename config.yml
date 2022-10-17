@@ -7,11 +7,6 @@ incline:
 bucket-time:
   gcs_bucket: bucket-time
   single_page_app: false
-etl-graph:
-  gcs_bucket: etl-graph
-  single_page_app: true
-  prefix: site
-  subdomain: true
 pibal:
   gcs_bucket: mozanalysis
   single_page_app: false
