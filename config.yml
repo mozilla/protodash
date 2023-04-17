@@ -1,9 +1,4 @@
 ---
-incline:
-  gcs_bucket: robotblake-sandbox
-  single_page_app: true
-  prefix: incline
-  subdomain: true
 bucket-time:
   gcs_bucket: bucket-time
   single_page_app: false
@@ -13,10 +8,6 @@ pibal:
 fenix-migration:
   gcs_bucket: fenix-migration
   single_page_app: false
-data-club-demo:
-  gcs_bucket: data-club-demo-project-1
-  public: true
-  subdomain: true
 partybal:
   gcs_bucket: partybal
   single_page_app: false
