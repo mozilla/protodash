@@ -24,3 +24,7 @@ data-steward-stats:
 mad-reports:
   gcs_bucket: mad-reports
   single_page_app: false
+mozilla-private-report:
+  gcs_bucket: moz-fx-data-bq-data-science-mozilla-private-report
+  single_page_app: false
+  subdomain: true
