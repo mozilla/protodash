@@ -2,12 +2,6 @@
 bucket-time:
   gcs_bucket: bucket-time
   single_page_app: false
-pibal:
-  gcs_bucket: mozanalysis
-  single_page_app: false
-fenix-migration:
-  gcs_bucket: fenix-migration
-  single_page_app: false
 partybal:
   gcs_bucket: partybal
   single_page_app: false
