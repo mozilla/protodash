@@ -22,3 +22,7 @@ mozilla-private-report:
   gcs_bucket: moz-fx-data-bq-data-science-mozilla-private-report
   single_page_app: false
   subdomain: true
+dawg:
+  gcs_bucket: moz-fx-data-prot-nonprod-c3a1-protodash
+  single_page_app: true
+  prefix: dawg/static
