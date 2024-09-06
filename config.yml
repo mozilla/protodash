@@ -26,3 +26,7 @@ dawg:
   gcs_bucket: moz-fx-data-prot-nonprod-c3a1-protodash
   single_page_app: true
   prefix: dawg/static
+perf-reports:
+  gcs_bucket: moz-fx-data-prot-nonprod-c3a1-protodash
+  single_page_app: false
+  prefix: perf-reports
