@@ -17,7 +17,7 @@ type Config struct {
 	Listen          string        `default:":8080"`
 	LogLevel        string        `split_words:"true" default:"debug"`
 	ProxyTimeout    time.Duration `split_words:"true" default:"10s"`
-	ClientTimeout   time.Duration `split_words:"true" default:"2s"`
+	ClientTimeout   time.Duration `split_words:"true" default:"60s"`
 	IdleConnTimeout time.Duration `split_words:"true" default:"120s"`
 	MaxIdleConns    int           `split_words:"true" default:"10"`
 	BaseDomain      string        `split_words:"true" default:"localhost:8080"`
