@@ -5,10 +5,6 @@ bucket-time:
 partybal:
   gcs_bucket: partybal
   single_page_app: false
-mps-deploys:
-  gcs_bucket: monitoring-queries
-  prefix: static
-  public: true
 data-health-monitor:
   gcs_bucket: data-health-monitor
   prefix: static
