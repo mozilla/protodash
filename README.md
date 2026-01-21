@@ -1,4 +1,6 @@
 [![CircleCI](https://circleci.com/gh/mozilla/protodash.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/protodash)
+[![Build](https://github.com/mozilla/protodash/actions/workflows/build.yml/badge.svg)](https://github.com/mozilla/protodash/actions/workflows/build.yml)
+[![Unit Tests](https://github.com/mozilla/protodash/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/mozilla/protodash/actions/workflows/unit_tests.yml)
 
 # ProtoDash
 
